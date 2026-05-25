@@ -1,35 +1,108 @@
 package com.proyecto.estudio_spring_boot.service;
-import com.proyecto.estudio_spring_boot.model.Usuario;
+import com.proyecto.estudio_spring_boot.dto.ActualizarUsuarioDto;
 import com.proyecto.estudio_spring_boot.repository.UsuarioRepository;
 
+import com.proyecto.estudio_spring_boot.dto.UsuarioRequest;
+import com.proyecto.estudio_spring_boot.dto.UsuarioResponse;
+import com.proyecto.estudio_spring_boot.entity.UsuarioEntity;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.stereotype.Service;
+
+@Service
 public class UsuarioService {
-    private UsuarioRepository usuariosDb = new UsuarioRepository();
     
-    public void insertarUsuario(int id, String nombre, int edad){
-        Usuario usuario = new Usuario(id, nombre, edad);
-        if(usuariosDb.buscarUsuario(id, null, null).isEmpty()){
-            usuariosDb.guardarUsuario(usuario);
-            System.out.println("Se inserto correctamente el usuario " + usuario);
-        }else{
-            System.out.println("El usuario " + usuario + " ya existe");
+   @Autowired
+   private UsuarioRepository usuariosDb;
+    
+   public String insertarUsuario(UsuarioRequest request){
+
+        Optional<UsuarioEntity> usuarioExistente =
+                usuariosDb.findById(request.getId());
+
+        if(usuarioExistente.isPresent()){
+            return "Usuario repetido";
         }
-   }
-    
-   public void mostrarUsuarios(){
-       System.out.println(usuariosDb.listarUsuarios());
-   }
+
+        UsuarioEntity usuario = new UsuarioEntity();
+        usuario.setId(request.getId());
+        usuario.setNombre(request.getNombre());
+        usuario.setEdad(request.getEdad());
+        usuario.setUsuario(request.getUsuario());
+        usuario.setPassword_hash(request.getPassword_hash());
+
+        usuariosDb.save(usuario);
+
+        return "Se insertó usuario";
+    }
    
-   public void buscarUsuariosFiltro(Integer id, String nombre, Integer edad){
-       System.out.println("Usuarios filtrados " +usuariosDb.buscarUsuario(id, nombre, edad));
-   }
-   
-   public void eliminarUsuario(Integer id){
-       if(!usuariosDb.buscarUsuario(id, null, null).isEmpty()){
-           Usuario usaurioEliminar = usuariosDb.buscarUsuario(id, null, null).getFirst();
-           usuariosDb.eliminarUsuario(usaurioEliminar);
-           System.out.println("Se elimino correctamente el usuario con ID " + id);   
+   public List<UsuarioResponse> mostrarUsuarios(String nombre){
+       List<UsuarioEntity> usuariosConsutlados;
+       if(nombre.isEmpty()){
+           usuariosConsutlados = usuariosDb.findAll();
        }else{
-           System.out.println("El usuario no existe");   
+           usuariosConsutlados = usuariosDb.findByNombre(nombre);
+       }
+       
+       
+       List<UsuarioResponse> respuesta = new ArrayList<>();
+
+        for(UsuarioEntity usuario : usuariosConsutlados){
+
+            UsuarioResponse dto = new UsuarioResponse();
+
+            dto.setId(usuario.getId());
+            dto.setNombre(usuario.getNombre());
+            dto.setEdad(usuario.getEdad());
+
+            respuesta.add(dto);
+        }
+
+        return respuesta;
+   }
+   
+   public UsuarioResponse buscarUsuariosFiltro(Integer id){
+       Optional<UsuarioEntity> usuariosConsultado = usuariosDb.findById(id);
+       
+            UsuarioResponse dto = new UsuarioResponse();
+
+            dto.setId(usuariosConsultado.get().getId());
+            dto.setNombre(usuariosConsultado.get().getNombre());
+            dto.setEdad(usuariosConsultado.get().getEdad());
+
+        return dto;
+   }
+   
+   public String actualizarUsuario(Integer id, ActualizarUsuarioDto request){
+
+        Optional<UsuarioEntity> usuarioExistente =
+                usuariosDb.findById(id);
+
+        if(usuarioExistente.isEmpty()){
+            return "Usuario no existe";
+        }
+
+        UsuarioEntity usuario = new UsuarioEntity();
+        usuario.setId(id);
+        usuario.setNombre(request.getNombre());
+        usuario.setEdad(request.getEdad());
+
+        usuariosDb.save(usuario);
+
+        return "Se actualiazo el usuario";
+    }
+   
+   public String eliminarUsuario(int id){
+       Optional<UsuarioEntity> usuariosConsultado = usuariosDb.findById(id);
+       
+       if(usuariosConsultado.isPresent()){
+           usuariosDb.delete(usuariosConsultado.get());
+           return "Se elimino usuario";
+       }else{
+           return "Usuario no existe";
        }
    }
    

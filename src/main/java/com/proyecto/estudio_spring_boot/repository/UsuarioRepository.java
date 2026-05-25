@@ -1,28 +1,17 @@
 package com.proyecto.estudio_spring_boot.repository;
 
-import com.proyecto.estudio_spring_boot.model.Usuario;
-import java.util.ArrayList;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.proyecto.estudio_spring_boot.entity.UsuarioEntity;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
+public interface UsuarioRepository
+       extends JpaRepository<UsuarioEntity, Integer> {
 
-public class UsuarioRepository {
-    private List<Usuario> usuariosDB = new ArrayList<>();
-    
-    public void guardarUsuario(Usuario usuarioInsertar){
-        usuariosDB.add(usuarioInsertar);
-    }
-    
-    public List<Usuario> listarUsuarios(){
-        return usuariosDB;
-    }
-    
-    public List<Usuario> buscarUsuario(Integer id, String nombre, Integer edad){
-        List<Usuario> usuariosFiltrados = usuariosDB.stream().filter(usuario -> (id == null || usuario.getId() == id ) && (nombre == null || usuario.getNombre().toUpperCase().equals(nombre.toUpperCase())) && (edad == null || usuario.getEdad() == edad)).toList();
-        return usuariosFiltrados;
-    }
-    
-    public void eliminarUsuario(Usuario usuarioEliminar){
-        usuariosDB.remove(usuarioEliminar);
-        
-    }
+    public Optional<UsuarioEntity> findByUsuario(Integer usuario);
+
+    public List<UsuarioEntity> findByNombre(String nombre);
 }
