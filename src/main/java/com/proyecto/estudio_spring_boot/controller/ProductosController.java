@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.proyecto.estudio_spring_boot.service.ProductoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/productos")
@@ -24,38 +25,38 @@ public class ProductosController {
     ProductoService productoService;
     
     @GetMapping("/{codigo}")
-    public ProductoResponse buscarProductoUnico(
+    public ResponseEntity<ProductoResponse> buscarProductoUnico(
         @PathVariable Integer codigo
     ){
-        return productoService.buscarProductoUnicoService(codigo);
+        return ResponseEntity.status(200).body(productoService.buscarProductoUnicoService(codigo));
     }
     
     @GetMapping
-    public List<ProductoResponse> buscarProductoFiltros(
+    public ResponseEntity<List<ProductoResponse>> buscarProductoFiltros(
             @RequestParam(required = false) String nombre
     ){
-        return productoService.buscarProductoFiltrosService(nombre);
+        return ResponseEntity.status(200).body(productoService.buscarProductoFiltrosService(nombre));
     }
     
     @PostMapping
-    public String insertarProducto(
+    public ResponseEntity<String> insertarProducto(
             @RequestBody ProductoRequest producto
     ){
-        return productoService.insertarProductoService(producto);
+        return ResponseEntity.status(200).body(productoService.insertarProductoService(producto));
     }
     
     @PutMapping("/{codigo}")
-    public String actualizarProducto(
+    public ResponseEntity<String> actualizarProducto(
             @PathVariable int codigo,
             @RequestBody ProductoActualizar producto
     ){
-        return productoService.actualizarProductoService(codigo, producto);
+        return ResponseEntity.status(200).body(productoService.actualizarProductoService(codigo, producto));
     }
     
     @DeleteMapping("/{codigo}")
-    public String eliminarProducto(
+    public ResponseEntity<String> eliminarProducto(
             @PathVariable int codigo
     ){
-        return productoService.eliminarProductoService(codigo);
+        return ResponseEntity.status(200).body(productoService.eliminarProductoService(codigo));
     }
 }
