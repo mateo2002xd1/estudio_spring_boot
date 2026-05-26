@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import com.proyecto.estudio_spring_boot.dto.UsuarioRequest;
 import com.proyecto.estudio_spring_boot.dto.UsuarioResponse;
@@ -30,24 +31,21 @@ public class UsuariosController {
     public ResponseEntity<String> insertarUsuario(
             @Valid @RequestBody UsuarioRequest usuario
     ){
-        String response = usuarioService.insertarUsuario(usuario);
-        return ResponseEntity.status(200).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.insertarUsuario(usuario));
     }
     
     @GetMapping
     public ResponseEntity<List<UsuarioResponse>> consultarUsuario(
             @RequestParam(required = false) String nombre
     ){
-        List<UsuarioResponse> usuariosFiltrados = usuarioService.mostrarUsuarios(nombre);
-        return ResponseEntity.status(200).body(usuariosFiltrados);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.mostrarUsuarios(nombre));
     }
     
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponse> consultarUsuarioUnico(
             @PathVariable int id
     ){
-        UsuarioResponse usuariosFiltrados = usuarioService.buscarUsuariosFiltro(id);
-        return ResponseEntity.status(200).body(usuariosFiltrados);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.buscarUsuariosFiltro(id));
     }
     
     @PutMapping("/{id}")
@@ -55,21 +53,13 @@ public class UsuariosController {
             @PathVariable Integer id,
             @Valid  @RequestBody ActualizarUsuarioDto datosUsuario
     ){
-        String response = usuarioService.actualizarUsuario(id, datosUsuario);
-        return ResponseEntity.status(200).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.actualizarUsuario(id, datosUsuario));
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarUsuario(
             @PathVariable int id
     ){
-        String response = usuarioService.eliminarUsuario(id);
-        return ResponseEntity.status(200).body(response);   
-    }
-    
-    @GetMapping("/test")
-    public ResponseEntity<String> testEndPoint(){
-        String dbUrl = System.getenv("DB_URL");
-        return ResponseEntity.status(200).body(dbUrl);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.eliminarUsuario(id));   
     }
 }
