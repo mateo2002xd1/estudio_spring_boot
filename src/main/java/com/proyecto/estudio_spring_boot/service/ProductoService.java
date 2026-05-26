@@ -5,6 +5,7 @@ import com.proyecto.estudio_spring_boot.repository.ProductoRepository;
 import com.proyecto.estudio_spring_boot.dto.ProductoRequest;
 import com.proyecto.estudio_spring_boot.dto.ProductoResponse;
 import com.proyecto.estudio_spring_boot.entity.ProductoEntity;
+import com.proyecto.estudio_spring_boot.exception.RegistroExisteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,10 @@ public class ProductoService{
             
             return response;
         }
-        return null;
+        
+        throw new RuntimeException(
+            "No se encontro producto: " + Integer.toString(codigo)
+        );
     }
     
     public List<ProductoResponse> buscarProductoFiltrosService(String nombre){
@@ -38,6 +42,12 @@ public class ProductoService{
             productosFiltrados = productoDb.findAll();
         }else{
             productosFiltrados = productoDb.findByNombre(nombre);
+        }
+        
+        if(productosFiltrados.isEmpty()){
+            throw new RuntimeException(
+                "No se encontro producto"
+            );
         }
         
         List<ProductoResponse> response = new ArrayList<>();
@@ -60,7 +70,9 @@ public class ProductoService{
         Optional<ProductoEntity> productoExiste = productoDb.findById(producto.getCodigo());
      
         if(productoExiste.isPresent()){
-            return "Producto existe";
+            throw new RegistroExisteException(
+                    "Producto " + Integer.toString(productoExiste.get().getCodigo()) + " ya existe"
+            );
         }else{
             ProductoEntity productoInsertar = new ProductoEntity();
             
@@ -88,7 +100,9 @@ public class ProductoService{
            
            return "Producto " + productoExiste.get().getCodigo() + " actualizado";
         }else{
-            return "Producto no existe";
+            throw new RuntimeException(
+                    "Producto " + Integer.toString(codigo) + " no existe"
+            );
         }
     }
     
@@ -100,7 +114,9 @@ public class ProductoService{
             
             return "Producto eliminado";
         }else{
-            return "Producto no existe";   
+            throw new RuntimeException(
+                    "Producto " + Integer.toString(codigo) + " no existe"
+            );
         }
     }
 }

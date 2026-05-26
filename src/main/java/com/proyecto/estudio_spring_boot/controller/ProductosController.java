@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.proyecto.estudio_spring_boot.service.ProductoService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
+
 
 @RestController
 @RequestMapping("/productos")
@@ -28,35 +32,35 @@ public class ProductosController {
     public ResponseEntity<ProductoResponse> buscarProductoUnico(
         @PathVariable Integer codigo
     ){
-        return ResponseEntity.status(200).body(productoService.buscarProductoUnicoService(codigo));
+        return ResponseEntity.status(HttpStatus.OK).body(productoService.buscarProductoUnicoService(codigo));
     }
     
     @GetMapping
     public ResponseEntity<List<ProductoResponse>> buscarProductoFiltros(
             @RequestParam(required = false) String nombre
     ){
-        return ResponseEntity.status(200).body(productoService.buscarProductoFiltrosService(nombre));
+        return ResponseEntity.status(HttpStatus.OK).body(productoService.buscarProductoFiltrosService(nombre));
     }
     
     @PostMapping
     public ResponseEntity<String> insertarProducto(
-            @RequestBody ProductoRequest producto
+            @Valid @RequestBody ProductoRequest producto
     ){
-        return ResponseEntity.status(200).body(productoService.insertarProductoService(producto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(productoService.insertarProductoService(producto));
     }
     
     @PutMapping("/{codigo}")
     public ResponseEntity<String> actualizarProducto(
             @PathVariable int codigo,
-            @RequestBody ProductoActualizar producto
+            @Valid  @RequestBody ProductoActualizar producto
     ){
-        return ResponseEntity.status(200).body(productoService.actualizarProductoService(codigo, producto));
+        return ResponseEntity.status(HttpStatus.OK).body(productoService.actualizarProductoService(codigo, producto));
     }
     
     @DeleteMapping("/{codigo}")
     public ResponseEntity<String> eliminarProducto(
             @PathVariable int codigo
     ){
-        return ResponseEntity.status(200).body(productoService.eliminarProductoService(codigo));
+        return ResponseEntity.status(HttpStatus.OK).body(productoService.eliminarProductoService(codigo));
     }
 }

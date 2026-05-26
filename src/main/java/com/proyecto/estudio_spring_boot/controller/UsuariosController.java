@@ -53,7 +53,7 @@ public class UsuariosController {
     @PutMapping("/{id}")
     public ResponseEntity<String> actualizarUsuario(
             @PathVariable Integer id,
-            @RequestBody ActualizarUsuarioDto datosUsuario
+            @Valid  @RequestBody ActualizarUsuarioDto datosUsuario
     ){
         String response = usuarioService.actualizarUsuario(id, datosUsuario);
         return ResponseEntity.status(200).body(response);

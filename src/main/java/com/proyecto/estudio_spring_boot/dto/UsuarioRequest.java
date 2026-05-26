@@ -1,7 +1,6 @@
 package com.proyecto.estudio_spring_boot.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.AllArgsConstructor;
@@ -12,13 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UsuarioRequest {
     
-    @NotNull
+    @Positive(message = "ID de usuario debe ser mayor a 0")
     private Integer id;
     
-    @NotBlank
+    @NotBlank(message = "Nombre del usuario no puede ser vacio")
     private String nombre;
     
-    @Positive
+    @Positive(message = "Edad del usuario debe ser mayor a 0")
     private Integer edad;
     
     private Integer usuario;
