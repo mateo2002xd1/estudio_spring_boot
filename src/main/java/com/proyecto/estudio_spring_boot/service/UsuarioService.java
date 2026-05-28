@@ -90,7 +90,7 @@ public class UsuarioService {
             );
    }
    
-   public String actualizarUsuario(Integer id, ActualizarUsuarioDto request){
+   public String actualizarUsuario(Integer id, ActualizarUsuarioDto request) {
 
         Optional<UsuarioEntity> usuarioExistente =
                 usuariosDb.findById(id);

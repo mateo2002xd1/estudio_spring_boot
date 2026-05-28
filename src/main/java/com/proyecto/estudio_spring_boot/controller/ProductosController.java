@@ -26,7 +26,7 @@ import org.springframework.http.HttpStatus;
 @RequestMapping("/productos")
 public class ProductosController {
     @Autowired
-    ProductoService productoService;
+    private ProductoService productoService;
     
     @GetMapping("/{codigo}")
     public ResponseEntity<ProductoResponse> buscarProductoUnico(

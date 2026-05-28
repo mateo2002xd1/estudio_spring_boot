@@ -57,4 +57,15 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
+    
+    @ExceptionHandler(NoAutorizadoException.class)
+    public ResponseEntity<ErrorResponse> manejoNoAutorizadoException(NoAutorizadoException ex){
+        Map<String, String> detalles = new HashMap<>();
+        
+        detalles.put("error", ex.getMessage());
+        
+        ErrorResponse response = ErrorResponse.builder().timestamp(LocalDateTime.now()).status(401).error("No Autorizado").detalles(detalles).build();
+        
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
 }
