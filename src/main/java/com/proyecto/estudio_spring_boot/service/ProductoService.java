@@ -9,10 +9,12 @@ import com.proyecto.estudio_spring_boot.exception.RegistroExisteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class ProductoService{
     @Autowired
@@ -28,9 +30,11 @@ public class ProductoService{
             response.setNombre(productoExiste.get().getNombre());
             response.setPrecio(productoExiste.get().getPrecio());
             
+            log.info("Producto filtrado");
             return response;
         }
         
+        log.warn("No se encontro producto {}", Integer.toString(codigo));
         throw new RuntimeException(
             "No se encontro producto: " + Integer.toString(codigo)
         );
@@ -45,6 +49,7 @@ public class ProductoService{
         }
         
         if(productosFiltrados.isEmpty()){
+            log.warn("No se encontro producto");
             throw new RuntimeException(
                 "No se encontro producto"
             );
@@ -63,6 +68,7 @@ public class ProductoService{
             response.add(productoAgregar);
         }
         
+        log.info("Producto filtrado");
         return response;
     }
     
@@ -70,6 +76,7 @@ public class ProductoService{
         Optional<ProductoEntity> productoExiste = productoDb.findById(producto.getCodigo());
      
         if(productoExiste.isPresent()){
+            log.warn("Producto {} ya existe", Integer.toString(productoExiste.get().getCodigo()));
             throw new RegistroExisteException(
                     "Producto " + Integer.toString(productoExiste.get().getCodigo()) + " ya existe"
             );
@@ -82,6 +89,7 @@ public class ProductoService{
             
             productoDb.save(productoInsertar);
             
+            log.info("Producto insertado");
             return "Producto insertado";
         }
     }
@@ -98,8 +106,10 @@ public class ProductoService{
            
            productoDb.save(productoActualizar);
            
+           log.info("Producto {} actualizado", productoExiste.get().getCodigo());
            return "Producto " + productoExiste.get().getCodigo() + " actualizado";
         }else{
+            log.warn("Producto {} no existe", Integer.toString(codigo));
             throw new RuntimeException(
                     "Producto " + Integer.toString(codigo) + " no existe"
             );
@@ -112,11 +122,14 @@ public class ProductoService{
         if(productoExiste.isPresent()){
             productoDb.delete(productoExiste.get());
             
+            log.info("Producto eliminado");
             return "Producto eliminado";
-        }else{
+        }else{ 
+            log.info("Producto {} no existe", Integer.toString(codigo));
             throw new RuntimeException(
                     "Producto " + Integer.toString(codigo) + " no existe"
             );
         }
     }
+   
 }

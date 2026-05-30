@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
     
-    @ExceptionHandler(RuntimeException.class)
+    /*@ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> manejoRuntimeException(RuntimeException ex){
         Map<String, String> detalles = new HashMap<>();
         
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         
-    }
+    }*/
     
     @ExceptionHandler(RegistroExisteException.class)
     public ResponseEntity<ErrorResponse> manejoRegistroExisteException(RegistroExisteException ex){

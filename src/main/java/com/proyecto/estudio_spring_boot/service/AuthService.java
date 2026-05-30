@@ -8,9 +8,11 @@ import com.proyecto.estudio_spring_boot.repository.UsuarioRepository;
 import com.proyecto.estudio_spring_boot.security.JwtService;
 import com.proyecto.estudio_spring_boot.security.PasswordService;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class AuthService {
     @Autowired
@@ -32,12 +34,14 @@ public class AuthService {
                 usuarioConsultado.setPassword_hash(encoder.hashPassword(datosUsuario.getPassword()));
                 
                 usuariosDb.save(usuarioConsultado);
-                
+                log.info("Usuario registrado correctamente");
                 return "Usuario registrado correctamente";
             }else{
+                log.warn("Usuario ya esta registrado");
                 throw new RegistroExisteException("Usuario ya esta registrado");
             }
         }else{
+            log.warn("Usuario no existe");
             throw new RuntimeException("Usuario no existe");
         }
     }
@@ -48,15 +52,20 @@ public class AuthService {
         if(usuarioExiste.isPresent()){
             UsuarioEntity usuarioConsultado = usuarioExiste.get();
             if(usuarioConsultado.getUsuario() == null){
+                log.warn("Usuario no esta registrado");
                 throw new RuntimeException("Usuario no esta registrado");
             }else{
                 if(encoder.matchPassword(usuarioConsultado.getPassword_hash(), datosUsuario.getPassword())){
-                    return jwtService.generarJWT(Integer.toString(id));
+                    String token = jwtService.generarJWT(Integer.toString(id));
+                    log.info("token generado ");
+                    return token;
                 }else{
+                    log.warn("Contraseña incorrecta");
                     throw new NoAutorizadoException("Contraseña incorrecta");
                 }
             }
         }else{
+            log.warn("Usuario no existe");
             throw new RuntimeException("Usuario no existe");
         }
     }

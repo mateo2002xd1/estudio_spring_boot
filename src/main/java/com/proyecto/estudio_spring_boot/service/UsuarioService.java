@@ -9,10 +9,12 @@ import com.proyecto.estudio_spring_boot.exception.RegistroExisteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class UsuarioService {
     
@@ -25,6 +27,8 @@ public class UsuarioService {
                 usuariosDb.findById(request.getId());
 
         if(usuarioExistente.isPresent()){
+            
+            log.warn("Usuario {} ya existe", Integer.toString(usuarioExistente.get().getId()));
             throw new RegistroExisteException(
                      "Usuario " + Integer.toString(usuarioExistente.get().getId()) + " ya existe"
              );
@@ -39,6 +43,7 @@ public class UsuarioService {
 
         usuariosDb.save(usuario);
 
+        log.info("Se insertó usuario");
         return "Se insertó usuario";
     }
    
@@ -51,6 +56,7 @@ public class UsuarioService {
        }
        
        if(usuariosConsutlados.isEmpty()){
+           log.warn("No se encontro usuario");
            throw new RuntimeException(
                 "No se encontro usuario"
             );
@@ -68,7 +74,8 @@ public class UsuarioService {
 
             respuesta.add(dto);
         }
-
+        
+        log.info("Usuario filtrado");
         return respuesta;
    }
    
@@ -82,9 +89,12 @@ public class UsuarioService {
             dto.setNombre(usuariosConsultado.get().getNombre());
             dto.setEdad(usuariosConsultado.get().getEdad());
 
+            log.info("Usuario filtrado");
+            
             return dto;
         }
         
+        log.warn("No se encontro usuario");
         throw new RuntimeException(
                 "No se encontro usuario"
             );
@@ -96,6 +106,7 @@ public class UsuarioService {
                 usuariosDb.findById(id);
 
         if(usuarioExistente.isEmpty()){
+            log.warn("No se encontro usuario");
             throw new RuntimeException(
                 "No se encontro usuario"
             );
@@ -107,7 +118,8 @@ public class UsuarioService {
         usuario.setEdad(request.getEdad());
 
         usuariosDb.save(usuario);
-
+        
+        log.info("Se actualiazo el usuario");
         return "Se actualiazo el usuario";
     }
    
@@ -116,8 +128,10 @@ public class UsuarioService {
        
        if(usuariosConsultado.isPresent()){
            usuariosDb.delete(usuariosConsultado.get());
+           log.info("Se elimino usuario");
            return "Se elimino usuario";
        }else{
+           log.warn("No se encontro usuario");
            throw new RuntimeException(
                 "No se encontro usuario"
             );
