@@ -6,6 +6,7 @@ import com.proyecto.estudio_spring_boot.repository.UsuarioRepository;
 import com.proyecto.estudio_spring_boot.service.UsuarioService;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,5 +49,10 @@ class UsuarioServiceTest {
         System.out.println(response);
         
         assertEquals(1001, response.getId());
+    }
+    
+    @Test
+    void testPruebaFalla(){
+        assertFalse(true);
     }
 }

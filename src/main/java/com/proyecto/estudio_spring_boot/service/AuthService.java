@@ -11,6 +11,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 @Slf4j
 @Service
@@ -23,6 +24,8 @@ public class AuthService {
     
     @Autowired
     private JwtService jwtService;
+    
+    private RestClient restClient = RestClient.create();
     
     public String registrarUsuario(Integer id, AuthProcesosDTO datosUsuario){
         Optional<UsuarioEntity> usuarioExiste = usuariosDb.findById(id);
@@ -68,6 +71,12 @@ public class AuthService {
             log.warn("Usuario no existe");
             throw new RuntimeException("Usuario no existe");
         }
+        
+        /*return restClient.post()
+                .uri("https://estudio-spring-boot.onrender.com/auth/login/" + Integer.toString(id))
+                .body(datosUsuario)
+                .retrieve()
+                .body(String.class);*/
     }
     
 }
