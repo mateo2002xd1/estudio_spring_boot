@@ -7,13 +7,10 @@ on:
       - ejercicio_local
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - uses: actions/checkout@v4
 
       - name: Setup Java
@@ -23,4 +20,9 @@ jobs:
           java-version: 21
 
       - name: Run Tests
+        env:
+          DB_URL: jdbc:postgresql://dpg-d7t6dgt0lvsc73cghbd0-a:5432/fastapi_db_i7h7
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: mvn test
